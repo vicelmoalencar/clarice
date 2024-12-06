@@ -4,15 +4,13 @@ import json
 import os
 from datetime import datetime
 import uuid
+import tempfile
 
 app = Flask(__name__)
 analyzer = TextAnalyzer()
 
-# Garante que o diretório de dados existe
-DATA_DIR = 'data'
-if not os.path.exists(DATA_DIR):
-    os.makedirs(DATA_DIR)
-
+# Usando diretório temporário para ambiente serverless
+DATA_DIR = tempfile.gettempdir()
 TEXTS_FILE = os.path.join(DATA_DIR, 'saved_texts.json')
 
 def load_saved_texts():
@@ -31,23 +29,30 @@ def index():
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
-    content = request.json.get('content', '')
-    result = analyzer.analyze_text(content)
-    return jsonify(result)
+    try:
+        content = request.json.get('content', '')
+        if not content:
+            return jsonify({"error": "No content provided"}), 400
+        result = analyzer.analyze_text(content)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/save', methods=['POST'])
 def save():
     try:
         text_data = request.json
+        if not text_data:
+            return jsonify({"status": "error", "message": "No data provided"}), 400
+            
         text_data['id'] = str(uuid.uuid4())
-        
         texts = load_saved_texts()
         texts.append(text_data)
         save_texts_to_file(texts)
         
         return jsonify({"status": "success"})
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)})
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/get_saved_texts', methods=['GET'])
 def get_saved_texts():
@@ -57,15 +62,15 @@ def get_saved_texts():
     except Exception as e:
         return jsonify([])
 
-@app.route('/delete_text/<text_id>', methods=['DELETE'])
+@app.route('/delete/<text_id>', methods=['DELETE'])
 def delete_text(text_id):
     try:
         texts = load_saved_texts()
-        texts = [text for text in texts if text['id'] != text_id]
+        texts = [t for t in texts if t['id'] != text_id]
         save_texts_to_file(texts)
         return jsonify({"status": "success"})
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)})
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

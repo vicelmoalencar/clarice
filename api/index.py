@@ -1,5 +1,6 @@
 import os
 import sys
+from http.server import BaseHTTPRequestHandler
 from app import app
 import nltk
 
@@ -37,6 +38,27 @@ if missing_vars:
 logger.info("All environment variables are set")
 logger.info(f"Python version: {sys.version}")
 logger.info(f"Current working directory: {os.getcwd()}")
+
+class handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        try:
+            # Serve index.html
+            with open('templates/index.html', 'r', encoding='utf-8') as f:
+                content = f.read()
+                
+            # Replace Flask template variables with actual paths
+            content = content.replace("{{ url_for('static', filename='css/style.css') }}", "/static/css/style.css")
+            content = content.replace("{{ url_for('static', filename='js/main.js') }}", "/static/js/main.js")
+            
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            self.wfile.write(content.encode())
+        except Exception as e:
+            self.send_response(500)
+            self.send_header('Content-type', 'text/plain')
+            self.end_headers()
+            self.wfile.write(str(e).encode())
 
 if __name__ == '__main__':
     app.run()

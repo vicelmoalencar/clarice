@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor de Texto Inteligente</title>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Editor de Texto Inteligente</h1>
+            <div class="button-group">
+                <button id="analyzeButton">Analisar Texto</button>
+                <button id="saveButton">Salvar Documento</button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="editor-container">
+                <div id="editor"></div>
+            </div>
+            
+            <div class="saved-texts-panel">
+                <h2>Textos Salvos</h2>
+                <div id="savedTextsGrid" class="saved-texts-grid"></div>
+            </div>
+
+            <div class="analysis-panel" id="analysisPanel">
+                <h2>Análise do Texto</h2>
+                <div class="analysis-sections">
+                    <div class="analysis-section">
+                        <h3>Estilo</h3>
+                        <div id="styleIssues"></div>
+                    </div>
+                    
+                    <div class="analysis-section">
+                        <h3>Gramática e Ortografia</h3>
+                        <div id="grammarIssues"></div>
+                    </div>
+                    
+                    <div class="analysis-section">
+                        <h3>Legibilidade</h3>
+                        <div id="readabilityScore"></div>
+                    </div>
+                    
+                    <div class="analysis-section">
+                        <h3>Palavras Repetidas</h3>
+                        <div id="wordRepetition"></div>
+                    </div>
+                    
+                    <div class="analysis-section">
+                        <h3>Frases Longas</h3>
+                        <div id="sentenceLength"></div>
+                    </div>
+                    
+                    <div class="analysis-section">
+                        <h3>Problemas de Paralelismo</h3>
+                        <div id="parallelismIssues"></div>
+                    </div>
+                    
+                    <div class="analysis-section">
+                        <h3>Sugestões de Correção</h3>
+                        <div id="correctionSuggestions" class="correction-suggestions"></div>
+                    </div>
+                    
+                    <div class="analysis-section">
+                        <h3>Voz Passiva</h3>
+                        <div id="passiveVoice"></div>
+                    </div>
+                    
+                    <div class="analysis-section">
+                        <h3>Clichês</h3>
+                        <div id="cliches"></div>
+                    </div>
+                    
+                    <div class="analysis-section">
+                        <h3>Uso de Gerúndio</h3>
+                        <div id="gerundUse"></div>
+                    </div>
+                    
+                    <div class="analysis-section">
+                        <h3>Clareza</h3>
+                        <div id="clarity"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

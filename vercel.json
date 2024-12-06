@@ -2,14 +2,30 @@
     "version": 2,
     "builds": [
         {
-            "src": "api/index.py",
+            "src": "api/*.py",
             "use": "@vercel/python"
+        },
+        {
+            "src": "static/**",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "templates/**",
+            "use": "@vercel/static"
         }
     ],
     "routes": [
         {
+            "src": "/analyze",
+            "dest": "/api/analyze.py"
+        },
+        {
+            "src": "/static/(.*)",
+            "dest": "/static/$1"
+        },
+        {
             "src": "/(.*)",
-            "dest": "api/index.py"
+            "dest": "/templates/$1"
         }
     ]
 }
